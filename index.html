@@ -132,11 +132,27 @@
         input:checked + .slider { background-color: #6236ff; box-shadow: 0 0 15px rgba(98, 54, 255, 0.4); }
         input:checked + .slider:before { transform: translateX(20px); background-color: #ffffff; }
 
+        /* СКРОЛЛ ДЛЯ ДОНАТОВ */
+        .donate-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        /* Кастомизация скроллбара */
+        .donate-list::-webkit-scrollbar { width: 5px; }
+        .donate-list::-webkit-scrollbar-track { background: transparent; }
+        .donate-list::-webkit-scrollbar-thumb { background: #1a162b; border-radius: 10px; }
+        .donate-list::-webkit-scrollbar-thumb:hover { background: #6236ff; }
+
         /* КАРТОЧКИ ДОНАТА */
         .donate-card {
             background: linear-gradient(145deg, #110e1c 0%, #151126 100%);
             border: 1px solid rgba(255, 255, 255, 0.02); border-radius: 16px;
-            padding: 16px; display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;
             transition: all 0.3s ease;
         }
         .donate-card:hover {
@@ -145,12 +161,11 @@
             transform: translateY(-2px);
         }
         .donate-badge {
-            background: rgba(212, 175, 55, 0.1); color: #d4af37;
-            padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 600;
-            text-transform: uppercase; width: fit-content;
+            padding: 4px 8px; border-radius: 8px; font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; width: fit-content; letter-spacing: 0.5px;
         }
         .donate-title { font-size: 1.1rem; font-weight: 600; color: #ffffff; margin-top: 6px; }
-        .donate-price { font-size: 0.9rem; color: #724bf2; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+        .donate-price { font-size: 0.9rem; color: #a38fff; font-weight: 500; margin-top: 2px; }
         
         .buy-btn {
             background: #19142d; border: 1px solid rgba(98, 54, 255, 0.4);
@@ -241,31 +256,199 @@
 
         <!-- ВКЛАДКА 2: МАГАЗИН ДОНАТА ЗА ЗВЕЗДЫ -->
         <div id="donate-tab" class="tab-content">
-            <div class="donate-card">
-                <div class="feature-info">
-                    <div class="donate-badge" style="color: #a38fff;">Привилегия</div>
-                    <div class="donate-title">VIP Статус</div>
-                    <div class="donate-price">Цена: 50 ⭐️</div>
+            <div class="donate-list">
+                
+                <!-- СКРИНШОТ 1 -->
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(147,112,219,0.15); color: #9370db;">Игрок</div>
+                        <div class="donate-title">DRAGON</div>
+                        <div class="donate-price">Цена: 15 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(29₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('dragon', 15, 'DRAGON')">Купить</button>
                 </div>
-                <button class="buy-btn" onclick="buyStarsItem('vip', 50)">Купить</button>
-            </div>
 
-            <div class="donate-card">
-                <div class="feature-info">
-                    <div class="donate-badge" style="color: #ffcc00;">Элита</div>
-                    <div class="donate-title">PREMIUM</div>
-                    <div class="donate-price">Цена: 100 ⭐️</div>
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(210,105,30,0.15); color: #d2691e;">Игрок</div>
+                        <div class="donate-title">TIGER</div>
+                        <div class="donate-price">Цена: 18 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(35₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('tiger', 18, 'TIGER')">Купить</button>
                 </div>
-                <button class="buy-btn" onclick="buyStarsItem('premium', 100)">Купить</button>
-            </div>
 
-            <div class="donate-card">
-                <div class="feature-info">
-                    <div class="donate-badge" style="color: #ff4500;">Кейсы</div>
-                    <div class="donate-title">Донат Кейс (х5)</div>
-                    <div class="donate-price">Цена: 35 ⭐️</div>
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(169,169,169,0.15); color: #a9a9a9;">Игрок</div>
+                        <div class="donate-title">RABBIT</div>
+                        <div class="donate-price">Цена: 35 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(69₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('rabbit', 35, 'RABBIT')">Купить</button>
                 </div>
-                <button class="buy-btn" onclick="buyStarsItem('cases_x5', 35)">Купить</button>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(50,50,50,0.3); color: #777;">Игрок</div>
+                        <div class="donate-title">BUNNY</div>
+                        <div class="donate-price">Цена: 45 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(89₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('bunny', 45, 'BUNNY')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(178,34,34,0.15); color: #b22222;">Миф</div>
+                        <div class="donate-title">DRACULA</div>
+                        <div class="donate-price">Цена: 55 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(109₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('dracula', 55, 'DRACULA')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(75,0,130,0.2); color: #8a2be2;">Миф</div>
+                        <div class="donate-title">BULL</div>
+                        <div class="donate-price">Цена: 65 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(129₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('bull', 65, 'BULL')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(0,128,128,0.15); color: #008080;">Миф</div>
+                        <div class="donate-title">HYDRA</div>
+                        <div class="donate-price">Цена: 75 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(149₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('hydra', 75, 'HYDRA')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(34,139,34,0.15); color: #228b22;">Миф</div>
+                        <div class="donate-title">COBRA</div>
+                        <div class="donate-price">Цена: 95 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(189₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('cobra', 95, 'COBRA')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(255,0,0,0.1); color: #ff3333;">Бессмертный</div>
+                        <div class="donate-title">VAMPIRE</div>
+                        <div class="donate-price">Цена: 115 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(229₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('vampire', 115, 'VAMPIRE')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(218,165,32,0.15); color: #daa520;">Бессмертный</div>
+                        <div class="donate-title">GOD</div>
+                        <div class="donate-price">Цена: 130 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(259₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('god', 130, 'GOD')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(240,230,140,0.1); color: #f0e68c;">Бессмертный</div>
+                        <div class="donate-title">PEGAS</div>
+                        <div class="donate-price">Цена: 160 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(319₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('pegas', 160, 'PEGAS')">Купить</button>
+                </div>
+
+                <!-- СКРИНШОТ 2 -->
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(184,134,11,0.15); color: #b8860b;">Персонал</div>
+                        <div class="donate-title">D.HELPER</div>
+                        <div class="donate-price">Цена: 150 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(299₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('d_helper', 150, 'D.HELPER')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(154,205,50,0.15); color: #9acd32;">Персонал</div>
+                        <div class="donate-title">HELPER</div>
+                        <div class="donate-price">Цена: 165 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(329₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('helper', 165, 'HELPER')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(30,144,255,0.15); color: #1e90ff;">Персонал</div>
+                        <div class="donate-title">ST.HELPER</div>
+                        <div class="donate-price">Цена: 215 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(429₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('st_helper', 215, 'ST.HELPER')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(0,0,205,0.15); color: #0000cd;">Персонал</div>
+                        <div class="donate-title">MODER</div>
+                        <div class="donate-price">Цена: 235 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(469₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('moder', 235, 'MODER')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(72,61,139,0.2); color: #483d8b;">Персонал</div>
+                        <div class="donate-title">GL.MODER</div>
+                        <div class="donate-price">Цена: 250 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(499₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('gl_moder', 250, 'GL.MODER')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(0,206,209,0.15); color: #00ced1;">Администрация</div>
+                        <div class="donate-title">ML.ADMIN</div>
+                        <div class="donate-price">Цена: 300 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(599₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('ml_admin', 300, 'ML.ADMIN')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(139,0,0,0.2); color: #ff2222;">Администрация</div>
+                        <div class="donate-title">ADMIN</div>
+                        <div class="donate-price">Цена: 500 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(999₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('admin', 500, 'ADMIN')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(148,0,211,0.15); color: #9400d3;">Создатели</div>
+                        <div class="donate-title">CODER</div>
+                        <div class="donate-price">Цена: 1500 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(2999₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('coder', 1500, 'CODER')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(128,0,0,0.2); color: #800000;">Создатели</div>
+                        <div class="donate-title">DEV</div>
+                        <div class="donate-price">Цена: 2225 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(4449₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('dev', 2225, 'DEV')">Купить</button>
+                </div>
+
+                <div class="donate-card">
+                    <div class="feature-info">
+                        <div class="donate-badge" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px dashed rgba(255,255,255,0.3);">ULTIMATE</div>
+                        <div class="donate-title" style="font-size:1.0rem;">Права на сере</div>
+                        <div class="donate-price">Цена: 3880 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(7777₽)</span></div>
+                    </div>
+                    <button class="buy-btn" onclick="buyStarsItem('server_rights', 3880, 'Права на сервере')">Купить</button>
+                </div>
+
             </div>
         </div>
 
@@ -292,7 +475,7 @@
         }
 
         // ОТПРАВКА ДАННЫХ ПОКУПКИ В БОТА
-        function buyStarsItem(itemId, starsPrice) {
+        function buyStarsItem(itemId, starsPrice, itemTitle) {
             const nick = document.getElementById('nick-input').value.trim();
             if(!nick) {
                 alert("Сначала укажи свой Никнейм во вкладке Profile, чтобы мы знали кому выдать донат!");
@@ -303,6 +486,7 @@
                 action: "buy_stars_donate",
                 item: itemId,
                 price: starsPrice,
+                title: itemTitle,
                 nickname: nick
             }));
         }
