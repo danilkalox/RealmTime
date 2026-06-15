@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealmTime Network App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-color: #ff9f43;
+            --text-color: #ffffff;
+            --text-muted: #a0a0a0;
+            --nav-bg: #1a1a1a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; overflow-x: hidden; }
+
+        /* Анимация переключения вкладок */
+        .page {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Стильные карточки */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        h1, h2 { color: var(--accent-color); margin-bottom: 10px; }
+        p { font-size: 15px; margin-bottom: 8px; }
+        .muted { color: var(--text-muted); font-size: 13px; }
+
+        /* Кнопки с плавным эффектом */
+        .btn {
+            background: linear-gradient(135deg, #ff9f43, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-secondary { background: #333; border: 1px solid #444; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: white;
+            margin-top: 5px;
+            font-size: 15px;
+        }
+
+        /* Нижнее меню навигации */
+        .nav-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 65px;
+            background: var(--nav-bg);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #252525;
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 11px;
+            cursor: pointer;
+            transition: color 0.2s;
+            flex: 1;
+            text-align: center;
+        }
+        .nav-item.active { color: var(--accent-color); font-weight: bold; }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- ВКЛАДКА 1: ПРОФИЛЬ -->
+    <div id="page-profile" class="page active">
+        <div class="card">
+            <h2>👤 Твой профиль</h2>
+            <p>Добро пожаловать, <span id="user-name" style="color:var(--accent-color);">Игрок</span>!</p>
+            <p>🎮 Игровой ник: <span id="mc-nick">Загрузка...</span></p>
+            <p>💰 Баланс: <b id="user-balance">0</b> рилликов</p>
+        </div>
+
+        <div class="card" id="bind-box">
+            <h3>🔗 Привязка аккаунта Майнкрафт</h3>
+            <p class="muted">Введите ник, зайдите на сервер и введите полученный код.</p>
+            <input type="text" id="nick-input" placeholder="Твой ник на сервере">
+            <button class="btn" onclick="sendAction('bind_request', {nick: document.getElementById('nick-input').value})">Получить код</button>
+        </div>
+
+        <div class="card">
+            <h3>📥 Управление балансом</h3>
+            <button class="btn btn-secondary" onclick="sendAction('withdraw_all')">Вывести все риллики на сервер</button>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 2: КАЗИНО -->
+    <div id="page-casino" class="page">
+        <div class="card">
+            <h2>🎰 Игровой зал</h2>
+            <p class="muted">Все игры списывают баланс прямо из твоего профиля.</p>
+        </div>
+
+        <div class="card">
+            <h3>🎲 Классический Кубик</h3>
+            <p>Ставка: <b>500 рилликов</b>. Выпадет цифра 6 — получишь 1500!</p>
+            <button class="btn" onclick="sendAction('play_dice')">Бросить кубик</button>
+        </div>
+
+        <div class="card">
+            <h3>⚡ Мгновенный Риск (x2.0)</h3>
+            <p>Шанс 42%. Удвой ставку или потеряй всё.</p>
+            <input type="number" id="bet-input" placeholder="Сумма ставки">
+            <button class="btn" onclick="sendAction('play_risk', {bet: document.getElementById('bet-input').value})">Рискнуть</button>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 3: НАГРАДЫ И РЕФЕРАЛЫ -->
+    <div id="page-rewards" class="page">
+        <div class="card">
+            <h2>🎁 Награды & Рефералы</h2>
+            <p>Забирай бонусы каждые 24 часа!</p>
+            <button class="btn" onclick="sendAction('claim_daily')">🎁 Забрать ежедневную награду</button>
+        </div>
+
+        <div class="card">
+            <h3>👥 Реферальная система</h3>
+            <p class="muted">Приглашай друзей и получай процент от их бонусов.</p>
+            <button class="btn btn-secondary" onclick="sendAction('get_ref_link')">🔗 Получить реф. ссылку в чат</button>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 4: АДМИНКА (СКРЫТА ПО УМОЛЧАНИЮ) -->
+    <div id="page-admin" class="page">
+        <div class="card">
+            <h2>⚙ Консоль управления</h2>
+            <input type="text" id="cmd-input" placeholder="/say Привет сервер">
+            <button class="btn" onclick="sendAction('run_console', {cmd: document.getElementById('cmd-input').value})">Выполнить RCON</button>
+        </div>
+    </div>
+
+    <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="switchPage('profile', this)">
+            <span class="nav-icon">👤</span><span>Профиль</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('casino', this)">
+            <span class="nav-icon">🎰</span><span>Казино</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('rewards', this)">
+            <span class="nav-icon">🎁</span><span>Бонусы</span>
+        </div>
+        <div class="nav-item" id="admin-nav" style="display:none;" onclick="switchPage('admin', this)">
+            <span class="nav-icon">⚙</span><span>Админка</span>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+
+        // Отображаем имя из Telegram
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
+            
+            // Если зашел админ — показываем вкладку админки (добавь свои ID сюда)
+            const admins = [6007594909, 8653468828];
+            if (admins.includes(tg.initDataUnsafe.user.id)) {
+                document.getElementById('admin-nav').style.display = 'flex';
+            }
+        }
+
+        // Функция плавного переключения вкладок
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            document.getElementById('page-' + pageId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        // Отправка действий бэкенду бота
+        function sendAction(actionName, data = {}) {
+            const payload = { action: actionName, ...data };
+            tg.sendData(JSON.stringify(payload));
+            tg.close(); // Закрываем WebApp, бот сразу пришлет результат текстом в чат
+        }
+    </script>
+</body>
+</html>
