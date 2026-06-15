@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RealmTime Console</title>
+    <title>RealmTime | Console</title>
     <style>
-        /* Общие стили и космический темный фон */
+        /* Базовые настройки стиля Pulse */
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: radial-gradient(circle at top, #1a122c 0%, #0d0813 100%);
-            color: #f3f4f6;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: #090610;
+            background: radial-gradient(circle at top, #140e28 0%, #08050d 70%);
+            color: #ececed;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -19,199 +20,221 @@
             box-sizing: border-box;
         }
 
-        /* Ограничиваем ширину, чтобы на ПК не растягивалось, а на телефоне было во всю ширину */
+        /* Контейнер приложения (как мобильный интерфейс софта по центру) */
         .app-container {
             width: 100%;
-            max-width: 460px;
+            max-width: 480px;
+            background: #0d0a16;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
             gap: 20px;
-            padding-bottom: 80px; /* Отступ снизу для меню */
-        }
-
-        /* Стильные стеклянные карточки (Glassmorphism) */
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
-            overflow: hidden;
         }
 
-        /* Эффект наведения на карточку */
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(139, 92, 246, 0.3); /* Фиолетовое свечение */
-            box-shadow: 0 12px 40px 0 rgba(139, 92, 246, 0.15);
-        }
-
-        /* Заголовки с иконками */
-        h2 {
-            margin-top: 0;
-            margin-bottom: 18px;
-            font-size: 1.25rem;
-            font-weight: 600;
+        /* Шапка в стиле Pulse Visuals */
+        .header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            letter-spacing: 0.5px;
+            margin-bottom: 10px;
         }
 
-        .profile-title { color: #a78bfa; }      /* Неоново-фиолетовый */
-        .link-title { color: #fb923c; }         /* Мягкий оранжевый */
-        .balance-title { color: #38bdf8; }      /* Голубой */
-
-        /* Текст внутри профиля */
-        .info-text {
-            font-size: 0.95rem;
-            margin: 8px 0;
-            color: #cbd5e1;
+        .logo-area {
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        
-        .info-text span {
-            color: #fff;
-            font-weight: 500;
-        }
-
-        /* Поле ввода никнейма */
-        .input-field {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 14px 16px;
-            color: #fff;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: #fb923c;
-            box-shadow: 0 0 12px rgba(2fb, 146, 60, 0.2);
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .input-field::placeholder {
-            color: #64748b;
-        }
-
-        /* Кнопки с крутым эффектом нажатия */
-        .btn {
-            width: 100%;
-            border: none;
-            border-radius: 14px;
-            padding: 15px 20px;
-            font-size: 1rem;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 1.15rem;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-icon {
+            color: #724bf2;
+            font-size: 1.3rem;
             display: flex;
-            justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Оранжевая кнопка кода */
-        .btn-orange {
-            background: linear-gradient(135deg, #ff7e40 0%, #ff5216 100%);
-            color: #fff;
-        }
-
-        .btn-orange:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 82, 22, 0.4);
-            filter: brightness(1.1);
-        }
-
-        /* Имитация глубокого физического нажатия */
-        .btn-orange:active {
-            transform: translateY(2px) scale(0.98);
-            box-shadow: 0 2px 10px rgba(255, 82, 22, 0.2);
-        }
-
-        /* Серая кнопка баланса */
-        .btn-gray {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #e2e8f0;
-        }
-
-        .btn-gray:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(56, 189, 248, 0.4);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.15);
-        }
-
-        .btn-gray:active {
-            transform: translateY(2px) scale(0.98);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Нижнее меню навигации */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 460px;
-            background: rgba(13, 8, 19, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 10px;
-            box-sizing: border-box;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            background: none;
+        .login-btn {
+            background: linear-gradient(135deg, #6236ff 0%, #4b1fff 100%);
             border: none;
-            color: #64748b;
-            font-size: 0.75rem;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(98, 54, 255, 0.3);
             transition: all 0.3s ease;
-            padding: 6px 16px;
-            border-radius: 12px;
         }
 
-        /* Подсветка активной вкладки в меню */
-        .nav-item.active {
-            color: #a78bfa;
-            background: rgba(167, 139, 250, 0.08);
-        }
-
-        .nav-item:hover:not(.active) {
-            color: #cbd5e1;
-            background: rgba(255, 255, 255, 0.03);
+        .login-btn:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 6px 20px rgba(98, 54, 255, 0.5);
             transform: translateY(-1px);
         }
 
-        .nav-item:active {
-            transform: scale(0.95);
+        .login-btn:active {
+            transform: translateY(1px);
         }
 
-        .nav-icon {
-            font-size: 1.2rem;
+        /* Вкладки навигации Visuals / HUD / Utilities */
+        .tabs-menu {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 12px;
+            margin-bottom: 5px;
+        }
+
+        .tab-link {
+            color: #4e4a5d;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.25s ease;
+            cursor: pointer;
+        }
+
+        .tab-link.active {
+            color: #ececed;
+            position: relative;
+        }
+
+        /* Сетка функций софта */
+        .features-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Строка функции софта (как в Pulse) */
+        .feature-row {
+            background: #110e1c;
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid transparent;
+            transition: all 0.25s ease;
+        }
+
+        /* Эффект наведения на функцию софта */
+        .feature-row:hover {
+            background: #141023;
+            border-color: rgba(114, 75, 242, 0.15);
+        }
+
+        .feature-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .feature-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #928fa4;
+            transition: color 0.25s ease;
+        }
+
+        .feature-row:hover .feature-name {
+            color: #ffffff;
+        }
+
+        .feature-value {
+            font-size: 0.85rem;
+            color: #4e4a5d;
+        }
+
+        .feature-value span {
+            color: #724bf2;
+            font-weight: 500;
+        }
+
+        /* Кастомное поле ввода в стиле софта */
+        .software-input {
+            background: #08060f;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+            width: 140px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            text-align: right;
+        }
+
+        .software-input:focus {
+            border-color: #724bf2;
+            box-shadow: 0 0 10px rgba(114, 75, 242, 0.2);
+            background: #0b0816;
+        }
+
+        .software-input::placeholder {
+            color: #3b3748;
+        }
+
+        /* Переключатель-тумблер софта (Toggle Switch как в Pulse) */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #1a162b;
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #4e4a5d;
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+        }
+
+        /* Эффект активации тумблера софта */
+        input:checked + .slider {
+            background-color: #6236ff;
+            box-shadow: 0 0 15px rgba(98, 54, 255, 0.4);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+            background-color: #ffffff;
+        }
+
+        /* Имитация клика по строке софта */
+        .feature-row:active {
+            transform: scale(0.995);
+            background: #0f0c1a;
         }
     </style>
 </head>
@@ -219,47 +242,95 @@
 
     <div class="app-container">
         
-        <!-- Карточка 1: Профиль -->
-        <div class="card">
-            <h2 class="profile-title"><span class="nav-icon">👤</span> Твой профиль</h2>
-            <div class="info-text">Добро пожаловать, <span id="player-status">Игрок!</span></div>
-            <div class="info-text">🎮 Игровой ник: <span id="mc-nick">Загрузка...</span></div>
-            <div class="info-text">💰 Баланс: <span id="balance-amount">0 рилликов</span></div>
-        </div>
-
-        <!-- Карточка 2: Привязка аккаунта -->
-        <div class="card">
-            <h2 class="link-title"><span class="nav-icon">🔗</span> Привязка аккаунта Майнкрафт</h2>
-            <div style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 14px; line-height: 1.4;">
-                Введите ник, зайдите на сервер и введите полученный код.
+        <!-- Шапка PulseVisuals Style -->
+        <div class="header">
+            <div class="logo-area">
+                <span class="logo-icon">🔮</span>
+                <span>RealmTime</span>
             </div>
-            <input type="text" class="input-field" placeholder="Твой ник на сервере" id="nick-input">
-            <button class="btn btn-orange" id="get-code-btn">Получить код</button>
+            <button class="login-btn" id="profile-btn">Логин</button>
         </div>
 
-        <!-- Карточка 3: Управление -->
-        <div class="card">
-            <h2 class="balance-title"><span class="nav-icon">💼</span> Управление балансом</h2>
-            <button class="btn btn-gray" id="withdraw-btn">Вывести все рилликов на сервер</button>
+        <!-- Навигационные вкладки приватного софта -->
+        <div class="tabs-menu">
+            <span class="tab-link active">Profile</span>
+            <span class="tab-link">Casino</span>
+            <span class="tab-link">Utilities</span>
+        </div>
+
+        <!-- Список функций софта (переделано под Майнкрафт сервер) -->
+        <div class="features-grid">
+            
+            <!-- Строка 1: Информация о профиле -->
+            <div class="feature-row">
+                <div class="feature-info">
+                    <div class="feature-name">Игрок статус</div>
+                    <div class="feature-value">Добро пожаловать, <span id="player-status">Игрок!</span></div>
+                </div>
+                <div style="font-size: 0.85rem; color: #4e4a5d; font-weight: 500;">Active</div>
+            </div>
+
+            <!-- Строка 2: Игровой ник -->
+            <div class="feature-row">
+                <div class="feature-info">
+                    <div class="feature-name">Никнейм</div>
+                    <div class="feature-value">Сервер: <span id="mc-nick">Загрузка...</span></div>
+                </div>
+                <!-- Инпут вместо кнопки, прямо в строке софта -->
+                <input type="text" class="software-input" placeholder="Твой ник" id="nick-input">
+            </div>
+
+            <!-- Строка 3: Баланс -->
+            <div class="feature-row">
+                <div class="feature-info">
+                    <div class="feature-name">Текущий баланс</div>
+                    <div class="feature-value">Доступно: <span id="balance-amount">0 рилликов</span></div>
+                </div>
+                <div style="font-size: 1.1rem; font-weight: 600; color: #6236ff;">$</div>
+            </div>
+
+            <!-- Строка 4: Тумблер Получения кода -->
+            <div class="feature-row">
+                <div class="feature-info">
+                    <div class="feature-name">Получить код привязки</div>
+                    <div class="feature-value">Генерация сессии авторизации</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="get-code-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- Строка 5: Тумблер Вывода баланса -->
+            <div class="feature-row">
+                <div class="feature-info">
+                    <div class="feature-name">Вывести все риллики</div>
+                    <div class="feature-value">Мгновенный перевод на сервер</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="withdraw-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
         </div>
 
     </div>
 
-    <!-- Навигация снизу -->
-    <div class="nav-bar">
-        <button class="nav-item active">
-            <span class="nav-icon">👤</span>
-            <span>Профиль</span>
-        </button>
-        <button class="nav-item">
-            <span class="nav-icon">🎰</span>
-            <span>Казино</span>
-        </button>
-        <button class="nav-item">
-            <span class="nav-icon">🎁</span>
-            <span>Бонусы</span>
-        </button>
-    </div>
+    <!-- Небольшой скрипт для имитации работы тумблеров софта -->
+    <script>
+        // Код сброса тумблеров назад после клика (чтобы работали как кнопки)
+        document.getElementById('get-code-toggle').addEventListener('change', function() {
+            if(this.checked) {
+                setTimeout(() => { this.checked = false; }, 800);
+            }
+        });
+        document.getElementById('withdraw-toggle').addEventListener('change', function() {
+            if(this.checked) {
+                setTimeout(() => { this.checked = false; }, 800);
+            }
+        });
+    </script>
 
 </body>
 </html>
