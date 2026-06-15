@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RealmTime | Console</title>
+    <!-- ПОДКЛЮЧАЕМ СКРИПТ ТЕЛЕГРАМА (БЕЗ НЕГО КНОПКИ НЕ БУДУТ СВЯЗЫВАТЬСЯ С БОТОМ) -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Базовые настройки стиля Pulse */
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
             background: #090610;
             background: radial-gradient(circle at top, #140e28 0%, #08050d 70%);
             color: #ececed;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -20,27 +21,23 @@
             box-sizing: border-box;
         }
 
-        /* Контейнер приложения (как мобильный интерфейс софта по центру) */
         .app-container {
             width: 100%;
             max-width: 480px;
             background: #0d0a16;
             border: 1px solid rgba(255, 255, 255, 0.03);
             border-radius: 24px;
-            padding: 24px;
+            padding: 20px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            position: relative;
+            gap: 16px;
         }
 
-        /* Шапка в стиле Pulse Visuals */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
         }
 
         .logo-area {
@@ -55,8 +52,6 @@
         .logo-icon {
             color: #724bf2;
             font-size: 1.3rem;
-            display: flex;
-            align-items: center;
         }
 
         .login-btn {
@@ -72,51 +67,34 @@
             transition: all 0.3s ease;
         }
 
-        .login-btn:hover {
-            filter: brightness(1.15);
-            box-shadow: 0 6px 20px rgba(98, 54, 255, 0.5);
-            transform: translateY(-1px);
-        }
-
-        .login-btn:active {
-            transform: translateY(1px);
-        }
-
-        /* Вкладки навигации Visuals / HUD / Utilities */
         .tabs-menu {
             display: flex;
             gap: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             padding-bottom: 12px;
-            margin-bottom: 5px;
         }
 
         .tab-link {
             color: #4e4a5d;
             font-size: 0.95rem;
             font-weight: 500;
-            text-decoration: none;
-            transition: color 0.25s ease;
             cursor: pointer;
         }
 
         .tab-link.active {
             color: #ececed;
-            position: relative;
         }
 
-        /* Сетка функций софта */
         .features-grid {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        /* Строка функции софта (как в Pulse) */
         .feature-row {
             background: #110e1c;
             border-radius: 14px;
-            padding: 16px 20px;
+            padding: 14px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -124,7 +102,6 @@
             transition: all 0.25s ease;
         }
 
-        /* Эффект наведения на функцию софта */
         .feature-row:hover {
             background: #141023;
             border-color: rgba(114, 75, 242, 0.15);
@@ -140,7 +117,6 @@
             font-size: 0.95rem;
             font-weight: 500;
             color: #928fa4;
-            transition: color 0.25s ease;
         }
 
         .feature-row:hover .feature-name {
@@ -157,7 +133,6 @@
             font-weight: 500;
         }
 
-        /* Кастомное поле ввода в стиле софта */
         .software-input {
             background: #08060f;
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -174,15 +149,9 @@
 
         .software-input:focus {
             border-color: #724bf2;
-            box-shadow: 0 0 10px rgba(114, 75, 242, 0.2);
             background: #0b0816;
         }
 
-        .software-input::placeholder {
-            color: #3b3748;
-        }
-
-        /* Переключатель-тумблер софта (Toggle Switch как в Pulse) */
         .switch {
             position: relative;
             display: inline-block;
@@ -199,10 +168,7 @@
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-color: #1a162b;
             transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 24px;
@@ -220,7 +186,6 @@
             border-radius: 50%;
         }
 
-        /* Эффект активации тумблера софта */
         input:checked + .slider {
             background-color: #6236ff;
             box-shadow: 0 0 15px rgba(98, 54, 255, 0.4);
@@ -230,38 +195,26 @@
             transform: translateX(20px);
             background-color: #ffffff;
         }
-
-        /* Имитация клика по строке софта */
-        .feature-row:active {
-            transform: scale(0.995);
-            background: #0f0c1a;
-        }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        
-        <!-- Шапка PulseVisuals Style -->
         <div class="header">
             <div class="logo-area">
                 <span class="logo-icon">🔮</span>
                 <span>RealmTime</span>
             </div>
-            <button class="login-btn" id="profile-btn">Логин</button>
+            <button class="login-btn">Логин</button>
         </div>
 
-        <!-- Навигационные вкладки приватного софта -->
         <div class="tabs-menu">
             <span class="tab-link active">Profile</span>
             <span class="tab-link">Casino</span>
             <span class="tab-link">Utilities</span>
         </div>
 
-        <!-- Список функций софта (переделано под Майнкрафт сервер) -->
         <div class="features-grid">
-            
-            <!-- Строка 1: Информация о профиле -->
             <div class="feature-row">
                 <div class="feature-info">
                     <div class="feature-name">Игрок статус</div>
@@ -270,17 +223,14 @@
                 <div style="font-size: 0.85rem; color: #4e4a5d; font-weight: 500;">Active</div>
             </div>
 
-            <!-- Строка 2: Игровой ник -->
             <div class="feature-row">
                 <div class="feature-info">
                     <div class="feature-name">Никнейм</div>
                     <div class="feature-value">Сервер: <span id="mc-nick">Загрузка...</span></div>
                 </div>
-                <!-- Инпут вместо кнопки, прямо в строке софта -->
                 <input type="text" class="software-input" placeholder="Твой ник" id="nick-input">
             </div>
 
-            <!-- Строка 3: Баланс -->
             <div class="feature-row">
                 <div class="feature-info">
                     <div class="feature-name">Текущий баланс</div>
@@ -289,7 +239,6 @@
                 <div style="font-size: 1.1rem; font-weight: 600; color: #6236ff;">$</div>
             </div>
 
-            <!-- Строка 4: Тумблер Получения кода -->
             <div class="feature-row">
                 <div class="feature-info">
                     <div class="feature-name">Получить код привязки</div>
@@ -301,7 +250,6 @@
                 </label>
             </div>
 
-            <!-- Строка 5: Тумблер Вывода баланса -->
             <div class="feature-row">
                 <div class="feature-info">
                     <div class="feature-name">Вывести все риллики</div>
@@ -312,25 +260,58 @@
                     <span class="slider"></span>
                 </label>
             </div>
-
         </div>
-
     </div>
 
-    <!-- Небольшой скрипт для имитации работы тумблеров софта -->
+    <!-- ИНТЕЛЛЕКТУАЛЬНЫЙ СКРИПТ ДЛЯ СВЯЗИ С БОТОМ -->
     <script>
-        // Код сброса тумблеров назад после клика (чтобы работали как кнопки)
+        // Инициализируем Телеграм WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Расширяем на весь экран смартфона
+
+        // Динамически подставляем имя пользователя из Телеграма в профиль
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('player-status').innerText = tg.initDataUnsafe.user.first_name + '!';
+        }
+
+        // Клик по тумблеру "Получить код"
         document.getElementById('get-code-toggle').addEventListener('change', function() {
             if(this.checked) {
-                setTimeout(() => { this.checked = false; }, 800);
+                const nick = document.getElementById('nick-input').value.trim();
+                
+                if(!nick) {
+                    alert("Сначала введи свой ник в поле выше!");
+                    this.checked = false;
+                    return;
+                }
+
+                // Отправляем структурированные данные боту
+                const dataToSend = {
+                    action: "get_code",
+                    nickname: nick
+                };
+                
+                tg.sendData(JSON.stringify(dataToSend)); // Эта строчка шлет данные обратно в Python
+                
+                setTimeout(() => { this.checked = false; }, 600);
             }
         });
+
+        // Клик по тумблеру "Вывести все риллики"
         document.getElementById('withdraw-toggle').addEventListener('change', function() {
             if(this.checked) {
-                setTimeout(() => { this.checked = false; }, 800);
+                const nick = document.getElementById('nick-input').value.trim();
+                
+                const dataToSend = {
+                    action: "withdraw_balance",
+                    nickname: nick || "Не указан"
+                };
+                
+                tg.sendData(JSON.stringify(dataToSend));
+                
+                setTimeout(() => { this.checked = false; }, 600);
             }
         });
     </script>
-
 </body>
 </html>
