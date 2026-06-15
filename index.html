@@ -35,9 +35,13 @@
             animation: pulseAnimation 2s infinite ease-in-out;
         }
 
-        .loader-icon {
-            font-size: 3rem; color: #6236ff;
-            text-shadow: 0 0 20px rgba(98, 54, 255, 0.8), 0 0 40px rgba(98, 54, 255, 0.4);
+        .loader-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 2px solid rgba(98, 54, 255, 0.5);
+            box-shadow: 0 0 25px rgba(98, 54, 255, 0.6);
         }
 
         .loader-text {
@@ -49,6 +53,33 @@
             0% { transform: scale(0.95); opacity: 0.7; filter: drop-shadow(0 0 10px rgba(98, 54, 255, 0.4)); }
             50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 30px rgba(98, 54, 255, 0.9)); }
             100% { transform: scale(0.95); opacity: 0.7; filter: drop-shadow(0 0 10px rgba(98, 54, 255, 0.4)); }
+        }
+
+        #custom-alert {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 3, 10, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10000;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #custom-alert.active { opacity: 1; visibility: visible; }
+        .alert-box {
+            background: #0d0a16; border: 1px solid rgba(98, 54, 255, 0.2);
+            border-radius: 20px; padding: 24px; width: 85%; max-width: 320px;
+            text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            transform: scale(0.9); transition: transform 0.3s ease;
+        }
+        #custom-alert.active .alert-box { transform: scale(1); }
+        .alert-title { font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 10px; }
+        .alert-msg { font-size: 0.9rem; color: #928fa4; margin-bottom: 20px; line-height: 1.4; }
+        .alert-btn {
+            background: linear-gradient(135deg, #6236ff 0%, #4b1fff 100%);
+            border: none; color: white; padding: 10px 24px; border-radius: 12px;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%;
+            box-shadow: 0 4px 15px rgba(98, 54, 255, 0.3);
         }
 
         .app-container {
@@ -174,8 +205,16 @@
 
     <div id="preloader">
         <div class="loader-logo">
-            <div class="loader-icon">⚡</div>
+            <img src="logo.png" alt="RT" class="loader-img">
             <div class="loader-text">RealmTime</div>
+        </div>
+    </div>
+
+    <div id="custom-alert">
+        <div class="alert-box">
+            <div class="alert-title">RealmTime</div>
+            <div class="alert-msg" id="alert-message">Текст ошибки</div>
+            <button class="alert-btn" onclick="closeAlert()">OK</button>
         </div>
     </div>
 
@@ -454,6 +493,15 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        function showAlert(message) {
+            document.getElementById('alert-message').innerText = message;
+            document.getElementById('custom-alert').classList.add('active');
+        }
+
+        function closeAlert() {
+            document.getElementById('custom-alert').classList.remove('active');
+        }
+
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
@@ -464,7 +512,7 @@
         function buyStarsItem(itemId, starsPrice, itemTitle) {
             const nick = document.getElementById('nick-input').value.trim();
             if(!nick) {
-                alert("Сначала укажи свой Никнейм во вкладке Profile, чтобы мы знали кому выдать донат!");
+                showAlert("Сначала укажи свой Никнейм во вкладке Profile, чтобы мы знали кому выдать донат!");
                 switchTab('profile-tab', document.querySelector('.tabs-menu .tab-link'));
                 return;
             }
@@ -499,7 +547,7 @@
         document.getElementById('get-code-toggle').addEventListener('change', function() {
             if(this.checked) {
                 const nick = document.getElementById('nick-input').value.trim();
-                if(!nick) { alert("Сначала введи свой ник!"); this.checked = false; return; }
+                if(!nick) { showAlert("Сначала введи свой ник!"); this.checked = false; return; }
                 tg.sendData(JSON.stringify({ action: "get_code", nickname: nick }));
                 setTimeout(() => { this.checked = false; }, 600);
             }
