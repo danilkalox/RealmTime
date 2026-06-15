@@ -3,215 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RealmTime Network App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>RealmTime Console</title>
     <style>
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --accent-color: #ff9f43;
-            --text-color: #ffffff;
-            --text-muted: #a0a0a0;
-            --nav-bg: #1a1a1a;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; overflow-x: hidden; }
-
-        /* Анимация переключения вкладок */
-        .page {
-            display: none;
+        /* Общие стили и космический темный фон */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at top, #1a122c 0%, #0d0813 100%);
+            color: #f3f4f6;
+            margin: 0;
             padding: 20px;
-            animation: fadeIn 0.4s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Стильные карточки */
+        /* Ограничиваем ширину, чтобы на ПК не растягивалось, а на телефоне было во всю ширину */
+        .app-container {
+            width: 100%;
+            max-width: 460px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 80px; /* Отступ снизу для меню */
+        }
+
+        /* Стильные стеклянные карточки (Glassmorphism) */
         .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            border: 1px solid #2a2a2a;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        h1, h2 { color: var(--accent-color); margin-bottom: 10px; }
-        p { font-size: 15px; margin-bottom: 8px; }
-        .muted { color: var(--text-muted); font-size: 13px; }
+        /* Эффект наведения на карточку */
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.3); /* Фиолетовое свечение */
+            box-shadow: 0 12px 40px 0 rgba(139, 92, 246, 0.15);
+        }
 
-        /* Кнопки с плавным эффектом */
-        .btn {
-            background: linear-gradient(135deg, #ff9f43, #ff6b6b);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 15px;
-            font-weight: bold;
+        /* Заголовки с иконками */
+        h2 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-title { color: #a78bfa; }      /* Неоново-фиолетовый */
+        .link-title { color: #fb923c; }         /* Мягкий оранжевый */
+        .balance-title { color: #38bdf8; }      /* Голубой */
+
+        /* Текст внутри профиля */
+        .info-text {
+            font-size: 0.95rem;
+            margin: 8px 0;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-text span {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* Поле ввода никнейма */
+        .input-field {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s ease;
-            margin-top: 10px;
+            padding: 14px 16px;
+            color: #fff;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
         }
-        .btn:active { transform: scale(0.98); opacity: 0.9; }
-        .btn-secondary { background: #333; border: 1px solid #444; }
 
-        input {
+        .input-field:focus {
+            outline: none;
+            border-color: #fb923c;
+            box-shadow: 0 0 12px rgba(2fb, 146, 60, 0.2);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .input-field::placeholder {
+            color: #64748b;
+        }
+
+        /* Кнопки с крутым эффектом нажатия */
+        .btn {
             width: 100%;
-            padding: 12px;
-            background: #252525;
-            border: 1px solid #333;
-            border-radius: 10px;
-            color: white;
-            margin-top: 5px;
-            font-size: 15px;
+            border: none;
+            border-radius: 14px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Оранжевая кнопка кода */
+        .btn-orange {
+            background: linear-gradient(135deg, #ff7e40 0%, #ff5216 100%);
+            color: #fff;
+        }
+
+        .btn-orange:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 82, 22, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* Имитация глубокого физического нажатия */
+        .btn-orange:active {
+            transform: translateY(2px) scale(0.98);
+            box-shadow: 0 2px 10px rgba(255, 82, 22, 0.2);
+        }
+
+        /* Серая кнопка баланса */
+        .btn-gray {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+        }
+
+        .btn-gray:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(56, 189, 248, 0.4);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.15);
+        }
+
+        .btn-gray:active {
+            transform: translateY(2px) scale(0.98);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         /* Нижнее меню навигации */
         .nav-bar {
             position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 65px;
-            background: var(--nav-bg);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 460px;
+            background: rgba(13, 8, 19, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #252525;
-            z-index: 1000;
+            padding: 12px 10px;
+            box-sizing: border-box;
+            z-index: 100;
         }
+
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: var(--text-muted);
-            font-size: 11px;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 0.75rem;
             cursor: pointer;
-            transition: color 0.2s;
-            flex: 1;
-            text-align: center;
+            transition: all 0.3s ease;
+            padding: 6px 16px;
+            border-radius: 12px;
         }
-        .nav-item.active { color: var(--accent-color); font-weight: bold; }
-        .nav-icon { font-size: 20px; margin-bottom: 2px; }
+
+        /* Подсветка активной вкладки в меню */
+        .nav-item.active {
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.08);
+        }
+
+        .nav-item:hover:not(.active) {
+            color: #cbd5e1;
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateY(-1px);
+        }
+
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ВКЛАДКА 1: ПРОФИЛЬ -->
-    <div id="page-profile" class="page active">
+    <div class="app-container">
+        
+        <!-- Карточка 1: Профиль -->
         <div class="card">
-            <h2>👤 Твой профиль</h2>
-            <p>Добро пожаловать, <span id="user-name" style="color:var(--accent-color);">Игрок</span>!</p>
-            <p>🎮 Игровой ник: <span id="mc-nick">Загрузка...</span></p>
-            <p>💰 Баланс: <b id="user-balance">0</b> рилликов</p>
+            <h2 class="profile-title"><span class="nav-icon">👤</span> Твой профиль</h2>
+            <div class="info-text">Добро пожаловать, <span id="player-status">Игрок!</span></div>
+            <div class="info-text">🎮 Игровой ник: <span id="mc-nick">Загрузка...</span></div>
+            <div class="info-text">💰 Баланс: <span id="balance-amount">0 рилликов</span></div>
         </div>
 
-        <div class="card" id="bind-box">
-            <h3>🔗 Привязка аккаунта Майнкрафт</h3>
-            <p class="muted">Введите ник, зайдите на сервер и введите полученный код.</p>
-            <input type="text" id="nick-input" placeholder="Твой ник на сервере">
-            <button class="btn" onclick="sendAction('bind_request', {nick: document.getElementById('nick-input').value})">Получить код</button>
+        <!-- Карточка 2: Привязка аккаунта -->
+        <div class="card">
+            <h2 class="link-title"><span class="nav-icon">🔗</span> Привязка аккаунта Майнкрафт</h2>
+            <div style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 14px; line-height: 1.4;">
+                Введите ник, зайдите на сервер и введите полученный код.
+            </div>
+            <input type="text" class="input-field" placeholder="Твой ник на сервере" id="nick-input">
+            <button class="btn btn-orange" id="get-code-btn">Получить код</button>
         </div>
 
+        <!-- Карточка 3: Управление -->
         <div class="card">
-            <h3>📥 Управление балансом</h3>
-            <button class="btn btn-secondary" onclick="sendAction('withdraw_all')">Вывести все риллики на сервер</button>
+            <h2 class="balance-title"><span class="nav-icon">💼</span> Управление балансом</h2>
+            <button class="btn btn-gray" id="withdraw-btn">Вывести все рилликов на сервер</button>
         </div>
+
     </div>
 
-    <!-- ВКЛАДКА 2: КАЗИНО -->
-    <div id="page-casino" class="page">
-        <div class="card">
-            <h2>🎰 Игровой зал</h2>
-            <p class="muted">Все игры списывают баланс прямо из твоего профиля.</p>
-        </div>
-
-        <div class="card">
-            <h3>🎲 Классический Кубик</h3>
-            <p>Ставка: <b>500 рилликов</b>. Выпадет цифра 6 — получишь 1500!</p>
-            <button class="btn" onclick="sendAction('play_dice')">Бросить кубик</button>
-        </div>
-
-        <div class="card">
-            <h3>⚡ Мгновенный Риск (x2.0)</h3>
-            <p>Шанс 42%. Удвой ставку или потеряй всё.</p>
-            <input type="number" id="bet-input" placeholder="Сумма ставки">
-            <button class="btn" onclick="sendAction('play_risk', {bet: document.getElementById('bet-input').value})">Рискнуть</button>
-        </div>
-    </div>
-
-    <!-- ВКЛАДКА 3: НАГРАДЫ И РЕФЕРАЛЫ -->
-    <div id="page-rewards" class="page">
-        <div class="card">
-            <h2>🎁 Награды & Рефералы</h2>
-            <p>Забирай бонусы каждые 24 часа!</p>
-            <button class="btn" onclick="sendAction('claim_daily')">🎁 Забрать ежедневную награду</button>
-        </div>
-
-        <div class="card">
-            <h3>👥 Реферальная система</h3>
-            <p class="muted">Приглашай друзей и получай процент от их бонусов.</p>
-            <button class="btn btn-secondary" onclick="sendAction('get_ref_link')">🔗 Получить реф. ссылку в чат</button>
-        </div>
-    </div>
-
-    <!-- ВКЛАДКА 4: АДМИНКА (СКРЫТА ПО УМОЛЧАНИЮ) -->
-    <div id="page-admin" class="page">
-        <div class="card">
-            <h2>⚙ Консоль управления</h2>
-            <input type="text" id="cmd-input" placeholder="/say Привет сервер">
-            <button class="btn" onclick="sendAction('run_console', {cmd: document.getElementById('cmd-input').value})">Выполнить RCON</button>
-        </div>
-    </div>
-
-    <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+    <!-- Навигация снизу -->
     <div class="nav-bar">
-        <div class="nav-item active" onclick="switchPage('profile', this)">
-            <span class="nav-icon">👤</span><span>Профиль</span>
-        </div>
-        <div class="nav-item" onclick="switchPage('casino', this)">
-            <span class="nav-icon">🎰</span><span>Казино</span>
-        </div>
-        <div class="nav-item" onclick="switchPage('rewards', this)">
-            <span class="nav-icon">🎁</span><span>Бонусы</span>
-        </div>
-        <div class="nav-item" id="admin-nav" style="display:none;" onclick="switchPage('admin', this)">
-            <span class="nav-icon">⚙</span><span>Админка</span>
-        </div>
+        <button class="nav-item active">
+            <span class="nav-icon">👤</span>
+            <span>Профиль</span>
+        </button>
+        <button class="nav-item">
+            <span class="nav-icon">🎰</span>
+            <span>Казино</span>
+        </button>
+        <button class="nav-item">
+            <span class="nav-icon">🎁</span>
+            <span>Бонусы</span>
+        </button>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
-
-        // Отображаем имя из Telegram
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
-            
-            // Если зашел админ — показываем вкладку админки (добавь свои ID сюда)
-            const admins = [6007594909, 8653468828];
-            if (admins.includes(tg.initDataUnsafe.user.id)) {
-                document.getElementById('admin-nav').style.display = 'flex';
-            }
-        }
-
-        // Функция плавного переключения вкладок
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            
-            document.getElementById('page-' + pageId).classList.add('active');
-            element.classList.add('active');
-        }
-
-        // Отправка действий бэкенду бота
-        function sendAction(actionName, data = {}) {
-            const payload = { action: actionName, ...data };
-            tg.sendData(JSON.stringify(payload));
-            tg.close(); // Закрываем WebApp, бот сразу пришлет результат текстом в чат
-        }
-    </script>
 </body>
 </html>
