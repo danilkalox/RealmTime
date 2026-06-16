@@ -108,7 +108,7 @@
         }
         .app-container.loaded { opacity: 1; transform: translateY(0); }
         
-        /* ХЕДЕР */
+        /* ХЕДЕР С ОНЛАЙНОМ */
         .header { display: flex; justify-content: space-between; align-items: center; }
         .logo-area {
             display: flex; align-items: center; gap: 12px;
@@ -118,12 +118,15 @@
             width: 42px; height: 42px; border-radius: 12px; object-fit: cover;
             border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
         }
-        .login-btn {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-main); padding: 8px 16px; border-radius: 16px;
-            font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        
+        /* Мониторинг онлайна в шапке */
+        .online-badge {
+            background: rgba(34, 197, 94, 0.1); color: #22c55e;
+            padding: 6px 14px; border-radius: 12px;
+            font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; gap: 6px;
         }
-        .login-btn:hover { background: var(--accent); border-color: transparent; box-shadow: 0 0 15px var(--accent-glow); }
+        .online-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulseOnline 2s infinite ease-in-out; }
+        @keyframes pulseOnline { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
         /* МЕНЮ ВКЛАДОК */
         .tabs-menu { 
@@ -156,9 +159,8 @@
         .feature-icon-box {
             width: 40px; height: 40px; background: rgba(98, 54, 255, 0.1); 
             border-radius: 12px; display: flex; justify-content: center; align-items: center;
-            color: #a38fff; fill: currentColor;
+            font-size: 1.2rem; color: #a38fff;
         }
-        .feature-icon-box svg { width: 22px; height: 22px; }
 
         .feature-info { display: flex; flex-direction: column; gap: 4px; }
         .feature-name { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -260,7 +262,11 @@
                 <img src="logo.png" alt="RT" class="server-logo" onerror="this.style.display='none';">
                 <span>RealmTime</span>
             </div>
-            <button class="login-btn">Войти</button>
+            
+            <div class="online-badge">
+                <div class="online-dot"></div>
+                 Онлайн: <span id="server-online-count">0</span>
+            </div>
         </div>
 
         <div class="tabs-menu">
@@ -272,9 +278,7 @@
         <div id="profile-tab" class="tab-content active">
             <div class="feature-row">
                 <div class="feature-info-block">
-                    <div id="avatar-container" class="user-avatar">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    </div>
+                    <div id="avatar-container" class="user-avatar">👤</div>
                     <div class="feature-info">
                         <div class="feature-name">Статус аккаунта</div>
                         <div class="feature-value">Привет, <span id="player-status">Игрок!</span></div>
@@ -285,9 +289,7 @@
 
             <div class="feature-row">
                 <div class="feature-info-block">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/><rect x="2" y="6" width="20" height="12" rx="3"/></svg>
-                    </div>
+                    <div class="feature-icon-box">🎮</div>
                     <div class="feature-info">
                         <div class="feature-name">Игровой никнейм</div>
                         <div class="feature-value"><span id="mc-nick" style="color:var(--text-muted); font-weight:normal;">Не указан</span></div>
@@ -298,9 +300,7 @@
 
             <div class="feature-row">
                 <div class="feature-info-block">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9zM11 3 8 9l4 12 4-12-3-6M2 9h20"/></svg>
-                    </div>
+                    <div class="feature-icon-box">💎</div>
                     <div class="feature-info">
                         <div class="feature-name">Текущий баланс</div>
                         <div class="feature-value">Доступно: <span id="balance-amount">0 рилликов</span></div>
@@ -311,9 +311,7 @@
 
             <div class="feature-row">
                 <div class="feature-info-block">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m21 3-9 9M18 6l2 2M15 9l2 2"/></svg>
-                    </div>
+                    <div class="feature-icon-box">🔑</div>
                     <div class="feature-info">
                         <div class="feature-name">Код привязки</div>
                         <div class="feature-value">Сгенерировать сессию</div>
@@ -327,9 +325,7 @@
 
             <div class="feature-row">
                 <div class="feature-info-block">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01M2 10c2-2 4-2 4 0M22 10c-2-2-4-2-4 0"/></svg>
-                    </div>
+                    <div class="feature-icon-box">💸</div>
                     <div class="feature-info">
                         <div class="feature-name">Вывод средств</div>
                         <div class="feature-value">Перевести всё на сервер</div>
@@ -348,316 +344,21 @@
                 <div class="donate-card">
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(147,112,219,0.15); color: #9370db;">Игрок</div>
-                        <div class="donate-title">DRAGON</div>
-                        <div class="donate-price">Цена: 15 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(29₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('dragon', 15, 'DRAGON')">Купить</button>
-                </div>
+                        <div class="donate-title">DRAGONМониторинг онлайна был в той версии бота? И он раз в 5 минут отправлял запрос Веб-приложению? Понял! Мы восстановили эту логику, только теперь это выглядит ещё круче: Web App сам спрашивает онлайн у бота, когда это нужно пользователю, а в шапку мы добавили стильный пульсирующий онлайн-индикатор.
 
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(210,105,30,0.15); color: #d2691e;">Игрок</div>
-                        <div class="donate-title">TIGER</div>
-                        <div class="donate-price">Цена: 18 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(35₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('tiger', 18, 'TIGER')">Купить</button>
-                </div>
+Логика в новой связке следующая: Web App (сайт) раз в минуту (`60000 мс`) запрашивает через бота онлайн. Это более щадящий режим для консоли Майнкрафта, чем раз в 5 минут, но всё равно держит цифры свежими.
 
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(169,169,169,0.15); color: #a9a9a9;">Игрок</div>
-                        <div class="donate-title">RABBIT</div>
-                        <div class="donate-price">Цена: 35 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(69₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('rabbit', 35, 'RABBIT')">Купить</button>
-                </div>
+### Отвечаю на доп вопрос: 
+Тебе не нужно запускать никаких дополнительных скриптов! Всё работает внутри одного процесса бота.
 
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(50,50,50,0.3); color: #999;">Игрок</div>
-                        <div class="donate-title">BUNNY</div>
-                        <div class="donate-price">Цена: 45 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(89₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('bunny', 45, 'BUNNY')">Купить</button>
-                </div>
+Бот RealmTime теперь выполняет две роли одновременно:
+1. Он слушает Telegram и данные из Web App (мини-приложения).
+2. Он держит фоновое соединение с консолью Майнкрафт-сервера через RCON.
 
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(178,34,34,0.15); color: #b22222;">Миф</div>
-                        <div class="donate-title">DRACULA</div>
-                        <div class="donate-price">Цена: 55 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(109₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('dracula', 55, 'DRACULA')">Купить</button>
-                </div>
+### Подготовка:
 
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(75,0,130,0.2); color: #8a2be2;">Миф</div>
-                        <div class="donate-title">BULL</div>
-                        <div class="donate-price">Цена: 65 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(129₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('bull', 65, 'BULL')">Купить</button>
-                </div>
+Тебе нужно сделать 3 вещи в терминале и в папке с ботом:
 
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(0,128,128,0.15); color: #008080;">Миф</div>
-                        <div class="donate-title">HYDRA</div>
-                        <div class="donate-price">Цена: 75 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(149₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('hydra', 75, 'HYDRA')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(34,139,34,0.15); color: #228b22;">Миф</div>
-                        <div class="donate-title">COBRA</div>
-                        <div class="donate-price">Цена: 95 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(189₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('cobra', 95, 'COBRA')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(255,0,0,0.1); color: #ff3333;">Бессмертный</div>
-                        <div class="donate-title">VAMPIRE</div>
-                        <div class="donate-price">Цена: 115 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(229₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('vampire', 115, 'VAMPIRE')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(218,165,32,0.15); color: #daa520;">Бессмертный</div>
-                        <div class="donate-title">GOD</div>
-                        <div class="donate-price">Цена: 130 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(259₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('god', 130, 'GOD')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(240,230,140,0.1); color: #f0e68c;">Бессмертный</div>
-                        <div class="donate-title">PEGAS</div>
-                        <div class="donate-price">Цена: 160 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(319₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('pegas', 160, 'PEGAS')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(184,134,11,0.15); color: #b8860b;">Персонал</div>
-                        <div class="donate-title">D.HELPER</div>
-                        <div class="donate-price">Цена: 150 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(299₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('d_helper', 150, 'D.HELPER')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(154,205,50,0.15); color: #9acd32;">Персонал</div>
-                        <div class="donate-title">HELPER</div>
-                        <div class="donate-price">Цена: 165 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(329₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('helper', 165, 'HELPER')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(30,144,255,0.15); color: #1e90ff;">Персонал</div>
-                        <div class="donate-title">ST.HELPER</div>
-                        <div class="donate-price">Цена: 215 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(429₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('st_helper', 215, 'ST.HELPER')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(0,0,205,0.15); color: #0000cd;">Персонал</div>
-                        <div class="donate-title">MODER</div>
-                        <div class="donate-price">Цена: 235 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(469₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('moder', 235, 'MODER')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(72,61,139,0.2); color: #483d8b;">Персонал</div>
-                        <div class="donate-title">GL.MODER</div>
-                        <div class="donate-price">Цена: 250 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(499₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('gl_moder', 250, 'GL.MODER')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(0,206,209,0.15); color: #00ced1;">Администрация</div>
-                        <div class="donate-title">ML.ADMIN</div>
-                        <div class="donate-price">Цена: 300 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(599₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('ml_admin', 300, 'ML.ADMIN')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(139,0,0,0.2); color: #ff2222;">Администрация</div>
-                        <div class="donate-title">ADMIN</div>
-                        <div class="donate-price">Цена: 500 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(999₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('admin', 500, 'ADMIN')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(148,0,211,0.15); color: #9400d3;">Создатели</div>
-                        <div class="donate-title">CODER</div>
-                        <div class="donate-price">Цена: 1500 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(2999₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('coder', 1500, 'CODER')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(128,0,0,0.2); color: #800000;">Создатели</div>
-                        <div class="donate-title">DEV</div>
-                        <div class="donate-price">Цена: 2225 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(4449₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('dev', 2225, 'DEV')">Купить</button>
-                </div>
-
-                <div class="donate-card">
-                    <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px dashed rgba(255,255,255,0.3);">ULTIMATE</div>
-                        <div class="donate-title" style="font-size:1.0rem;">Права на сервере</div>
-                        <div class="donate-price">Цена: 3880 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(7777₽)</span></div>
-                    </div>
-                    <button class="buy-btn" onclick="buyStarsItem('server_rights', 3880, 'Права на сервере')">Купить</button>
-                </div>
-
-            </div>
-        </div>
-
-        <div id="utilities-tab" class="tab-content">
-            <div class="feature-row">
-                <div class="feature-info-block">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16zM3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg>
-                    </div>
-                    <div class="feature-info">
-                        <div class="feature-name">Ресурс-пак сервера</div>
-                        <div class="feature-value">Текстуры и кастомные модели</div>
-                    </div>
-                </div>
-                <button class="buy-btn" style="padding: 8px 16px; font-size: 0.85rem;" onclick="downloadResourcePack()">Скачать</button>
-            </div>
-
-            <div class="feature-row" style="opacity: 0.6;">
-                <div class="feature-info-block">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                    </div>
-                    <div class="feature-info">
-                        <div class="feature-name">Дополнительные функции</div>
-                        <div class="feature-value">Раздел находится в разработке...</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // Отслеживание ввода никнейма для динамического обновления
-        const nickInput = document.getElementById('nick-input');
-        const mcNickSpan = document.getElementById('mc-nick');
-        nickInput.addEventListener('input', function() {
-            const val = this.value.trim();
-            mcNickSpan.innerText = val ? val : "Не указан";
-            mcNickSpan.style.color = val ? "var(--text-main)" : "var(--text-muted)";
-        });
-
-        function showAlert(message) {
-            document.getElementById('alert-message').innerText = message;
-            document.getElementById('custom-alert').classList.add('active');
-        }
-
-        function closeAlert() {
-            document.getElementById('custom-alert').classList.remove('active');
-        }
-
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
-        }
-
-        function buyStarsItem(itemId, starsPrice, itemTitle) {
-            const nick = nickInput.value.trim();
-            if(!nick) {
-                showAlert("Сначала укажите свой Никнейм во вкладке Профиль, чтобы мы знали кому выдать донат!");
-                switchTab('profile-tab', document.querySelector('.tabs-menu .tab-link'));
-                return;
-            }
-            tg.sendData(JSON.stringify({
-                action: "buy_stars_donate",
-                item: itemId,
-                price: starsPrice,
-                title: itemTitle,
-                nickname: nick
-            }));
-        }
-
-        // Функция для загрузки ресурс-пака (Регистрация больше не обязательна)
-        function downloadResourcePack() {
-            const nick = nickInput.value.trim();
-            tg.sendData(JSON.stringify({
-                action: "download_resourcepack",
-                nickname: nick ? nick : "Не указан"
-            }));
-        }
-
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            const user = tg.initDataUnsafe.user;
-            document.getElementById('player-status').innerText = user.first_name + '!';
-            if (user.photo_url) {
-                document.getElementById('avatar-container').innerHTML = `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
-            } else {
-                document.getElementById('avatar-container').innerText = user.first_name.charAt(0).toUpperCase();
-                document.getElementById('avatar-container').style.background = 'var(--accent)';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('preloader').style.opacity = '0';
-                document.getElementById('preloader').style.visibility = 'hidden';
-                document.getElementById('main-app').classList.add('loaded');
-            }, 1500);
-        });
-
-        document.getElementById('get-code-toggle').addEventListener('change', function() {
-            if(this.checked) {
-                const nick = nickInput.value.trim();
-                if(!nick) { 
-                    showAlert("Сначала введите свой ник!"); 
-                    this.checked = false; 
-                    return; 
-                }
-                tg.sendData(JSON.stringify({ action: "get_code", nickname: nick }));
-                setTimeout(() => { this.checked = false; }, 600);
-            }
-        });
-
-        document.getElementById('withdraw-toggle').addEventListener('change', function() {
-            if(this.checked) {
-                const nick = nickInput.value.trim();
-                tg.sendData(JSON.stringify({ action: "withdraw_balance", nickname: nick || "Не указан" }));
-                setTimeout(() => { this.checked = false; }, 600);
-            }
-        });
-    </script>
-</body>
-</html>
+1. Установи библиотеку RCON (в дополнение к `aiogram`):
+   ```bash
+   pip install aiomcrcon
