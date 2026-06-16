@@ -3,16 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RealmTime | Console</title>
+    <title>RealmTime | Панель</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --bg-main: #07050c;
+            --bg-card: rgba(21, 16, 36, 0.6);
+            --border-card: rgba(98, 54, 255, 0.15);
+            --accent: #6236ff;
+            --accent-glow: rgba(98, 54, 255, 0.4);
+            --text-main: #f1f0f5;
+            --text-muted: #7e7991;
+        }
+
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: #090610;
-            background: radial-gradient(circle at top, #140e28 0%, #08050d 70%);
-            color: #ececed;
+            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: var(--bg-main);
+            background: radial-gradient(circle at top, #160f31 0%, #06040a 80%);
+            color: var(--text-main);
             margin: 0;
-            padding: 10px;
+            padding: 12px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -21,45 +31,47 @@
             overflow-x: hidden;
         }
 
+        /* ПРЕЛОАДЕР */
         #preloader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #07040d;
+            background: #050309;
             display: flex; justify-content: center; align-items: center;
             z-index: 9999;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
         .loader-logo {
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            display: flex; flex-direction: column; align-items: center; gap: 18px;
             animation: pulseAnimation 2s infinite ease-in-out;
         }
 
         .loader-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
+            width: 90px;
+            height: 90px;
+            border-radius: 24px;
             object-fit: cover;
-            border: 2px solid rgba(98, 54, 255, 0.5);
-            box-shadow: 0 0 25px rgba(98, 54, 255, 0.6);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
         .loader-text {
-            font-size: 1.4rem; font-weight: 600; letter-spacing: 1px; color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            font-size: 1.5rem; font-weight: 700; letter-spacing: 1.5px; color: #ffffff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         @keyframes pulseAnimation {
-            0% { transform: scale(0.95); opacity: 0.7; filter: drop-shadow(0 0 10px rgba(98, 54, 255, 0.4)); }
-            50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 30px rgba(98, 54, 255, 0.9)); }
-            100% { transform: scale(0.95); opacity: 0.7; filter: drop-shadow(0 0 10px rgba(98, 54, 255, 0.4)); }
+            0% { transform: scale(0.96); opacity: 0.8; }
+            50% { transform: scale(1.04); opacity: 1; filter: drop-shadow(0 0 15px var(--accent-glow)); }
+            100% { transform: scale(0.96); opacity: 0.8; }
         }
 
+        /* КАСТОМНОЕ УВЕДОМЛЕНИЕ */
         #custom-alert {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 3, 10, 0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(4, 2, 8, 0.85);
+            backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center;
             z-index: 10000;
             opacity: 0; visibility: hidden;
@@ -67,137 +79,160 @@
         }
         #custom-alert.active { opacity: 1; visibility: visible; }
         .alert-box {
-            background: #0d0a16; border: 1px solid rgba(98, 54, 255, 0.2);
-            border-radius: 20px; padding: 24px; width: 85%; max-width: 320px;
-            text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            background: #0f0b1e; border: 1px solid rgba(98, 54, 255, 0.3);
+            border-radius: 24px; padding: 24px; width: 85%; max-width: 320px;
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
             transform: scale(0.9); transition: transform 0.3s ease;
         }
         #custom-alert.active .alert-box { transform: scale(1); }
-        .alert-title { font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 10px; }
-        .alert-msg { font-size: 0.9rem; color: #928fa4; margin-bottom: 20px; line-height: 1.4; }
+        .alert-title { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .alert-msg { font-size: 0.95rem; color: #a5a1b8; margin-bottom: 24px; line-height: 1.4; }
         .alert-btn {
             background: linear-gradient(135deg, #6236ff 0%, #4b1fff 100%);
-            border: none; color: white; padding: 10px 24px; border-radius: 12px;
-            font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%;
-            box-shadow: 0 4px 15px rgba(98, 54, 255, 0.3);
+            border: none; color: white; padding: 12px 24px; border-radius: 14px;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer; width: 100%;
+            box-shadow: 0 4px 20px rgba(98, 54, 255, 0.4); transition: transform 0.2s;
         }
+        .alert-btn:active { transform: scale(0.98); }
 
+        /* ОСНОВНОЙ КОНТЕЙНЕР */
         .app-container {
-            width: 100%; max-width: 480px; background: #0d0a16;
-            border: 1px solid rgba(255, 255, 255, 0.03); border-radius: 24px;
-            padding: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-            display: flex; flex-direction: column; gap: 16px;
-            opacity: 0; transform: translateY(10px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            width: 100%; max-width: 480px; 
+            background: rgba(13, 9, 24, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 28px;
+            padding: 20px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+            display: flex; flex-direction: column; gap: 20px;
+            opacity: 0; transform: translateY(15px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
-
         .app-container.loaded { opacity: 1; transform: translateY(0); }
-        .header { display: flex; justify-content: space-between; align-items: center; }
         
+        /* ХЕДЕР */
+        .header { display: flex; justify-content: space-between; align-items: center; }
         .logo-area {
             display: flex; align-items: center; gap: 12px;
-            font-weight: 600; font-size: 1.2rem; letter-spacing: 0.5px;
+            font-weight: 700; font-size: 1.3rem; letter-spacing: 0.5px;
         }
-
         .server-logo {
-            width: 38px; height: 38px; border-radius: 10px; object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            width: 42px; height: 42px; border-radius: 12px; object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
         }
-
-        .user-avatar {
-            width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
-            border: 2px solid #6236ff; box-shadow: 0 0 10px rgba(98, 54, 255, 0.4);
-            background: #110e1c; display: flex; justify-content: center; align-items: center;
-            font-size: 0.9rem; font-weight: bold;
-        }
-
         .login-btn {
-            background: linear-gradient(135deg, #6236ff 0%, #4b1fff 100%);
-            border: none; color: white; padding: 8px 18px; border-radius: 20px;
-            font-size: 0.85rem; font-weight: 500; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(98, 54, 255, 0.3); transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main); padding: 8px 16px; border-radius: 16px;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
         }
+        .login-btn:hover { background: var(--accent); border-color: transparent; box-shadow: 0 0 15px var(--accent-glow); }
 
-        .tabs-menu { display: flex; gap: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); padding-bottom: 12px; }
-        .tab-link { color: #4e4a5d; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: color 0.3s ease; }
-        .tab-link.active { color: #ececed; }
-        .tab-content { display: none; flex-direction: column; gap: 10px; }
+        /* МЕНЮ ВКЛАДОК */
+        .tabs-menu { 
+            display: flex; gap: 8px; 
+            background: rgba(0, 0, 0, 0.3); padding: 4px; border-radius: 16px;
+        }
+        .tab-link { 
+            flex: 1; text-align: center; color: var(--text-muted); 
+            padding: 10px 0; font-size: 0.9rem; font-weight: 600; 
+            cursor: pointer; border-radius: 12px; transition: all 0.25s ease; 
+        }
+        .tab-link.active { background: #1b1435; color: #ffffff; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
+
+        /* КОНТЕНТ ВКЛАДОК */
+        .tab-content { display: none; flex-direction: column; gap: 12px; }
         .tab-content.active { display: flex; }
 
+        /* СТИЛЬНЫЕ ПАНЕЛИ / ПУНКТЫ */
         .feature-row {
-            background: #110e1c; border-radius: 14px; padding: 14px 18px;
+            background: var(--bg-card); 
+            border-radius: 18px; padding: 16px;
             display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid transparent; transition: all 0.25s ease;
+            border: 1px solid var(--border-card); 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.25s ease;
+        }
+        .feature-row:hover { background: rgba(26, 20, 45, 0.8); border-color: rgba(98, 54, 255, 0.3); }
+        .feature-info-block { display: flex; align-items: center; gap: 14px; }
+        
+        .feature-icon-box {
+            width: 40px; height: 40px; background: rgba(98, 54, 255, 0.1); 
+            border-radius: 12px; display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem; color: #a38fff;
         }
 
-        .feature-row:hover { background: #141023; border-color: rgba(114, 75, 242, 0.15); }
-        .feature-info-block { display: flex; align-items: center; gap: 12px; }
         .feature-info { display: flex; flex-direction: column; gap: 4px; }
-        .feature-name { font-size: 0.95rem; font-weight: 500; color: #928fa4; }
-        .feature-row:hover .feature-name { color: #ffffff; }
-        .feature-value { font-size: 0.85rem; color: #4e4a5d; }
-        .feature-value span { color: #724bf2; font-weight: 500; }
+        .feature-name { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .feature-value { font-size: 1rem; color: #ffffff; font-weight: 500; }
+        .feature-value span { color: #8e6eff; font-weight: 700; }
 
+        /* ПОЛЕ ВВОДА */
         .software-input {
-            background: #08060f; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px;
-            padding: 8px 12px; color: #fff; font-size: 0.85rem; outline: none;
-            width: 140px; box-sizing: border-box; transition: all 0.3s ease; text-align: right;
+            background: #090611; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;
+            padding: 10px 14px; color: #fff; font-size: 0.9rem; outline: none;
+            width: 150px; box-sizing: border-box; transition: all 0.3s ease; text-align: right;
+            font-weight: 600;
         }
-        .software-input:focus { border-color: #724bf2; background: #0b0816; }
+        .software-input:focus { border-color: var(--accent); background: #0f0b21; box-shadow: 0 0 15px rgba(98, 54, 255, 0.2); }
+        .software-input::placeholder { color: #444152; }
 
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        /* АВАТАРКА */
+        .user-avatar {
+            width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--accent); box-shadow: 0 0 15px var(--accent-glow);
+            background: #151126; display: flex; justify-content: center; align-items: center;
+            font-size: 1.1rem; font-weight: bold;
+        }
+
+        /* ПЕРЕКЛЮЧАТЕЛИ (SWITCH) */
+        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #1a162b; transition: .3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px;
+            background-color: #1e1936; transition: .3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.03);
         }
         .slider:before {
-            position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px;
-            background-color: #4e4a5d; transition: .3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 50%;
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: #635f75; transition: .3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 50%;
         }
-        input:checked + .slider { background-color: #6236ff; box-shadow: 0 0 15px rgba(98, 54, 255, 0.4); }
+        input:checked + .slider { background-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); border-color: transparent; }
         input:checked + .slider:before { transform: translateX(20px); background-color: #ffffff; }
 
+        /* СПИСОК ДОНАТА */
         .donate-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 60vh;
-            overflow-y: auto;
-            padding-right: 4px;
+            display: flex; flex-direction: column; gap: 12px;
+            max-height: 60vh; overflow-y: auto; padding-right: 4px;
         }
-
-        .donate-list::-webkit-scrollbar { width: 5px; }
+        .donate-list::-webkit-scrollbar { width: 6px; }
         .donate-list::-webkit-scrollbar-track { background: transparent; }
-        .donate-list::-webkit-scrollbar-thumb { background: #1a162b; border-radius: 10px; }
-        .donate-list::-webkit-scrollbar-thumb:hover { background: #6236ff; }
+        .donate-list::-webkit-scrollbar-thumb { background: #1a1533; border-radius: 10px; }
+        .donate-list::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
         .donate-card {
-            background: linear-gradient(145deg, #110e1c 0%, #151126 100%);
-            border: 1px solid rgba(255, 255, 255, 0.02); border-radius: 16px;
-            padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.3s ease;
+            background: linear-gradient(145deg, rgba(20, 15, 38, 0.7) 0%, rgba(13, 9, 24, 0.8) 100%);
+            border: 1px solid var(--border-card); border-radius: 20px;
+            padding: 16px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         .donate-card:hover {
-            border-color: rgba(98, 54, 255, 0.3);
-            box-shadow: 0 10px 25px rgba(98, 54, 255, 0.15);
-            transform: translateY(-2px);
+            border-color: rgba(98, 54, 255, 0.4);
+            box-shadow: 0 12px 30px rgba(98, 54, 255, 0.15);
+            transform: translateY(-3px);
         }
         .donate-badge {
-            padding: 4px 8px; border-radius: 8px; font-size: 0.72rem; font-weight: 700;
-            text-transform: uppercase; width: fit-content; letter-spacing: 0.5px;
+            padding: 4px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: 800;
+            text-transform: uppercase; width: fit-content; letter-spacing: 0.7px;
         }
-        .donate-title { font-size: 1.1rem; font-weight: 600; color: #ffffff; margin-top: 6px; }
-        .donate-price { font-size: 0.9rem; color: #a38fff; font-weight: 500; margin-top: 2px; }
+        .donate-title { font-size: 1.2rem; font-weight: 700; color: #ffffff; margin-top: 8px; letter-spacing: 0.5px; }
+        .donate-price { font-size: 0.9rem; color: #b19fff; font-weight: 600; margin-top: 4px; }
         
         .buy-btn {
-            background: #19142d; border: 1px solid rgba(98, 54, 255, 0.4);
-            color: #a38fff; padding: 10px 16px; border-radius: 12px;
-            font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+            background: #1c1538; border: 1px solid rgba(98, 54, 255, 0.5);
+            color: #b19fff; padding: 12px 20px; border-radius: 14px;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease;
         }
         .buy-btn:hover {
-            background: #6236ff; color: #ffffff;
-            box-shadow: 0 0 15px rgba(98, 54, 255, 0.4); border-color: transparent;
+            background: var(--accent); color: #ffffff;
+            box-shadow: 0 0 20px var(--accent-glow); border-color: transparent;
         }
     </style>
 </head>
@@ -213,8 +248,8 @@
     <div id="custom-alert">
         <div class="alert-box">
             <div class="alert-title">RealmTime</div>
-            <div class="alert-msg" id="alert-message">Текст ошибки</div>
-            <button class="alert-btn" onclick="closeAlert()">OK</button>
+            <div class="alert-msg" id="alert-message">Уведомление</div>
+            <button class="alert-btn" onclick="closeAlert()">Понятно</button>
         </div>
     </div>
 
@@ -224,13 +259,13 @@
                 <img src="logo.png" alt="RT" class="server-logo" onerror="this.style.display='none';">
                 <span>RealmTime</span>
             </div>
-            <button class="login-btn">Логин</button>
+            <button class="login-btn">Войти</button>
         </div>
 
         <div class="tabs-menu">
-            <span class="tab-link active" onclick="switchTab('profile-tab', this)">Profile</span>
+            <span class="tab-link active" onclick="switchTab('profile-tab', this)">Профиль</span>
             <span class="tab-link" onclick="switchTab('donate-tab', this)">Донат</span>
-            <span class="tab-link" onclick="switchTab('utilities-tab', this)">Utilities</span>
+            <span class="tab-link" onclick="switchTab('utilities-tab', this)">Утилиты</span>
         </div>
 
         <div id="profile-tab" class="tab-content active">
@@ -238,33 +273,42 @@
                 <div class="feature-info-block">
                     <div id="avatar-container" class="user-avatar">👤</div>
                     <div class="feature-info">
-                        <div class="feature-name">Игрок статус</div>
-                        <div class="feature-value">Добро пожаловать, <span id="player-status">Игрок!</span></div>
+                        <div class="feature-name">Статус аккаунта</div>
+                        <div class="feature-value">Привет, <span id="player-status">Игрок!</span></div>
                     </div>
                 </div>
-                <div style="font-size: 0.85rem; color: #4e4a5d; font-weight: 500;">Active</div>
+                <div style="font-size: 0.85rem; color: #22c55e; font-weight: 700; background: rgba(34,197,94,0.1); padding: 4px 10px; border-radius: 10px;">Онлайн</div>
             </div>
 
             <div class="feature-row">
-                <div class="feature-info">
-                    <div class="feature-name">Никнейм</div>
-                    <div class="feature-value">Сервер: <span id="mc-nick">Загрузка...</span></div>
+                <div class="feature-info-block">
+                    <div class="feature-icon-box">🎮</div>
+                    <div class="feature-info">
+                        <div class="feature-name">Игровой никнейм</div>
+                        <div class="feature-value"><span id="mc-nick" style="color:var(--text-muted); font-weight:normal;">Не указан</span></div>
+                    </div>
                 </div>
-                <input type="text" class="software-input" placeholder="Твой ник" id="nick-input">
+                <input type="text" class="software-input" placeholder="Введите ник" id="nick-input">
             </div>
 
             <div class="feature-row">
-                <div class="feature-info">
-                    <div class="feature-name">Текущий баланс</div>
-                    <div class="feature-value">Доступно: <span id="balance-amount">0 рилликов</span></div>
+                <div class="feature-info-block">
+                    <div class="feature-icon-box">💎</div>
+                    <div class="feature-info">
+                        <div class="feature-name">Текущий баланс</div>
+                        <div class="feature-value">Доступно: <span id="balance-amount">0 рилликов</span></div>
+                    </div>
                 </div>
-                <div style="font-size: 1.1rem; font-weight: 600; color: #6236ff;">$</div>
+                <div style="font-size: 1.2rem; font-weight: 700; color: #6236ff; padding-right: 5px;">$</div>
             </div>
 
             <div class="feature-row">
-                <div class="feature-info">
-                    <div class="feature-name">Получить код привязки</div>
-                    <div class="feature-value">Генерация сессии авторизации</div>
+                <div class="feature-info-block">
+                    <div class="feature-icon-box">🔑</div>
+                    <div class="feature-info">
+                        <div class="feature-name">Код привязки</div>
+                        <div class="feature-value">Сгенерировать сессию</div>
+                    </div>
                 </div>
                 <label class="switch">
                     <input type="checkbox" id="get-code-toggle">
@@ -273,9 +317,12 @@
             </div>
 
             <div class="feature-row">
-                <div class="feature-info">
-                    <div class="feature-name">Вывести все риллики</div>
-                    <div class="feature-value">Мгновенный перевод на сервер</div>
+                <div class="feature-info-block">
+                    <div class="feature-icon-box">💸</div>
+                    <div class="feature-info">
+                        <div class="feature-name">Вывод средств</div>
+                        <div class="feature-value">Перевести всё на сервер</div>
+                    </div>
                 </div>
                 <label class="switch">
                     <input type="checkbox" id="withdraw-toggle">
@@ -291,7 +338,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(147,112,219,0.15); color: #9370db;">Игрок</div>
                         <div class="donate-title">DRAGON</div>
-                        <div class="donate-price">Цена: 15 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(29₽)</span></div>
+                        <div class="donate-price">Цена: 15 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(29₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('dragon', 15, 'DRAGON')">Купить</button>
                 </div>
@@ -300,7 +347,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(210,105,30,0.15); color: #d2691e;">Игрок</div>
                         <div class="donate-title">TIGER</div>
-                        <div class="donate-price">Цена: 18 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(35₽)</span></div>
+                        <div class="donate-price">Цена: 18 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(35₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('tiger', 18, 'TIGER')">Купить</button>
                 </div>
@@ -309,16 +356,16 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(169,169,169,0.15); color: #a9a9a9;">Игрок</div>
                         <div class="donate-title">RABBIT</div>
-                        <div class="donate-price">Цена: 35 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(69₽)</span></div>
+                        <div class="donate-price">Цена: 35 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(69₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('rabbit', 35, 'RABBIT')">Купить</button>
                 </div>
 
                 <div class="donate-card">
                     <div class="feature-info">
-                        <div class="donate-badge" style="background: rgba(50,50,50,0.3); color: #777;">Игрок</div>
+                        <div class="donate-badge" style="background: rgba(50,50,50,0.3); color: #999;">Игрок</div>
                         <div class="donate-title">BUNNY</div>
-                        <div class="donate-price">Цена: 45 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(89₽)</span></div>
+                        <div class="donate-price">Цена: 45 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(89₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('bunny', 45, 'BUNNY')">Купить</button>
                 </div>
@@ -327,7 +374,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(178,34,34,0.15); color: #b22222;">Миф</div>
                         <div class="donate-title">DRACULA</div>
-                        <div class="donate-price">Цена: 55 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(109₽)</span></div>
+                        <div class="donate-price">Цена: 55 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(109₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('dracula', 55, 'DRACULA')">Купить</button>
                 </div>
@@ -336,7 +383,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(75,0,130,0.2); color: #8a2be2;">Миф</div>
                         <div class="donate-title">BULL</div>
-                        <div class="donate-price">Цена: 65 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(129₽)</span></div>
+                        <div class="donate-price">Цена: 65 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(129₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('bull', 65, 'BULL')">Купить</button>
                 </div>
@@ -345,7 +392,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(0,128,128,0.15); color: #008080;">Миф</div>
                         <div class="donate-title">HYDRA</div>
-                        <div class="donate-price">Цена: 75 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(149₽)</span></div>
+                        <div class="donate-price">Цена: 75 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(149₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('hydra', 75, 'HYDRA')">Купить</button>
                 </div>
@@ -354,7 +401,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(34,139,34,0.15); color: #228b22;">Миф</div>
                         <div class="donate-title">COBRA</div>
-                        <div class="donate-price">Цена: 95 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(189₽)</span></div>
+                        <div class="donate-price">Цена: 95 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(189₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('cobra', 95, 'COBRA')">Купить</button>
                 </div>
@@ -363,7 +410,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(255,0,0,0.1); color: #ff3333;">Бессмертный</div>
                         <div class="donate-title">VAMPIRE</div>
-                        <div class="donate-price">Цена: 115 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(229₽)</span></div>
+                        <div class="donate-price">Цена: 115 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(229₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('vampire', 115, 'VAMPIRE')">Купить</button>
                 </div>
@@ -372,7 +419,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(218,165,32,0.15); color: #daa520;">Бессмертный</div>
                         <div class="donate-title">GOD</div>
-                        <div class="donate-price">Цена: 130 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(259₽)</span></div>
+                        <div class="donate-price">Цена: 130 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(259₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('god', 130, 'GOD')">Купить</button>
                 </div>
@@ -381,7 +428,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(240,230,140,0.1); color: #f0e68c;">Бессмертный</div>
                         <div class="donate-title">PEGAS</div>
-                        <div class="donate-price">Цена: 160 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(319₽)</span></div>
+                        <div class="donate-price">Цена: 160 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(319₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('pegas', 160, 'PEGAS')">Купить</button>
                 </div>
@@ -390,7 +437,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(184,134,11,0.15); color: #b8860b;">Персонал</div>
                         <div class="donate-title">D.HELPER</div>
-                        <div class="donate-price">Цена: 150 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(299₽)</span></div>
+                        <div class="donate-price">Цена: 150 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(299₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('d_helper', 150, 'D.HELPER')">Купить</button>
                 </div>
@@ -399,7 +446,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(154,205,50,0.15); color: #9acd32;">Персонал</div>
                         <div class="donate-title">HELPER</div>
-                        <div class="donate-price">Цена: 165 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(329₽)</span></div>
+                        <div class="donate-price">Цена: 165 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(329₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('helper', 165, 'HELPER')">Купить</button>
                 </div>
@@ -408,7 +455,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(30,144,255,0.15); color: #1e90ff;">Персонал</div>
                         <div class="donate-title">ST.HELPER</div>
-                        <div class="donate-price">Цена: 215 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(429₽)</span></div>
+                        <div class="donate-price">Цена: 215 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(429₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('st_helper', 215, 'ST.HELPER')">Купить</button>
                 </div>
@@ -417,7 +464,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(0,0,205,0.15); color: #0000cd;">Персонал</div>
                         <div class="donate-title">MODER</div>
-                        <div class="donate-price">Цена: 235 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(469₽)</span></div>
+                        <div class="donate-price">Цена: 235 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(469₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('moder', 235, 'MODER')">Купить</button>
                 </div>
@@ -426,7 +473,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(72,61,139,0.2); color: #483d8b;">Персонал</div>
                         <div class="donate-title">GL.MODER</div>
-                        <div class="donate-price">Цена: 250 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(499₽)</span></div>
+                        <div class="donate-price">Цена: 250 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(499₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('gl_moder', 250, 'GL.MODER')">Купить</button>
                 </div>
@@ -435,7 +482,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(0,206,209,0.15); color: #00ced1;">Администрация</div>
                         <div class="donate-title">ML.ADMIN</div>
-                        <div class="donate-price">Цена: 300 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(599₽)</span></div>
+                        <div class="donate-price">Цена: 300 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(599₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('ml_admin', 300, 'ML.ADMIN')">Купить</button>
                 </div>
@@ -444,7 +491,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(139,0,0,0.2); color: #ff2222;">Администрация</div>
                         <div class="donate-title">ADMIN</div>
-                        <div class="donate-price">Цена: 500 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(999₽)</span></div>
+                        <div class="donate-price">Цена: 500 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(999₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('admin', 500, 'ADMIN')">Купить</button>
                 </div>
@@ -453,7 +500,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(148,0,211,0.15); color: #9400d3;">Создатели</div>
                         <div class="donate-title">CODER</div>
-                        <div class="donate-price">Цена: 1500 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(2999₽)</span></div>
+                        <div class="donate-price">Цена: 1500 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(2999₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('coder', 1500, 'CODER')">Купить</button>
                 </div>
@@ -462,7 +509,7 @@
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(128,0,0,0.2); color: #800000;">Создатели</div>
                         <div class="donate-title">DEV</div>
-                        <div class="donate-price">Цена: 2225 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(4449₽)</span></div>
+                        <div class="donate-price">Цена: 2225 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(4449₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('dev', 2225, 'DEV')">Купить</button>
                 </div>
@@ -470,8 +517,8 @@
                 <div class="donate-card">
                     <div class="feature-info">
                         <div class="donate-badge" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px dashed rgba(255,255,255,0.3);">ULTIMATE</div>
-                        <div class="donate-title" style="font-size:1.0rem;">Права на сере</div>
-                        <div class="donate-price">Цена: 3880 ⭐️ <span style="color:#4e4a5d; font-size:0.75rem;">(7777₽)</span></div>
+                        <div class="donate-title" style="font-size:1.0rem;">Права на сервере</div>
+                        <div class="donate-price">Цена: 3880 ⭐️ <span style="color:#7e7991; font-size:0.75rem;">(7777₽)</span></div>
                     </div>
                     <button class="buy-btn" onclick="buyStarsItem('server_rights', 3880, 'Права на сервере')">Купить</button>
                 </div>
@@ -481,9 +528,12 @@
 
         <div id="utilities-tab" class="tab-content">
             <div class="feature-row">
-                <div class="feature-info">
-                    <div class="feature-name">Дополнительные функции</div>
-                    <div class="feature-value">Раздел находится в разработке...</div>
+                <div class="feature-info-block">
+                    <div class="feature-icon-box">🛠</div>
+                    <div class="feature-info">
+                        <div class="feature-name">Дополнительные функции</div>
+                        <div class="feature-value">Раздел находится в разработке...</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -492,6 +542,15 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+
+        // Отслеживание ввода никнейма для динамического обновления
+        const nickInput = document.getElementById('nick-input');
+        const mcNickSpan = document.getElementById('mc-nick');
+        nickInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            mcNickSpan.innerText = val ? val : "Не указан";
+            mcNickSpan.style.color = val ? "var(--text-main)" : "var(--text-muted)";
+        });
 
         function showAlert(message) {
             document.getElementById('alert-message').innerText = message;
@@ -510,9 +569,9 @@
         }
 
         function buyStarsItem(itemId, starsPrice, itemTitle) {
-            const nick = document.getElementById('nick-input').value.trim();
+            const nick = nickInput.value.trim();
             if(!nick) {
-                showAlert("Сначала укажи свой Никнейм во вкладке Profile, чтобы мы знали кому выдать донат!");
+                showAlert("Сначала укажите свой Никнейм во вкладке Профиль, чтобы мы знали кому выдать донат!");
                 switchTab('profile-tab', document.querySelector('.tabs-menu .tab-link'));
                 return;
             }
@@ -532,7 +591,7 @@
                 document.getElementById('avatar-container').innerHTML = `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
             } else {
                 document.getElementById('avatar-container').innerText = user.first_name.charAt(0).toUpperCase();
-                document.getElementById('avatar-container').style.background = '#6236ff';
+                document.getElementById('avatar-container').style.background = 'var(--accent)';
             }
         }
 
@@ -546,8 +605,8 @@
 
         document.getElementById('get-code-toggle').addEventListener('change', function() {
             if(this.checked) {
-                const nick = document.getElementById('nick-input').value.trim();
-                if(!nick) { showAlert("Сначала введи свой ник!"); this.checked = false; return; }
+                const nick = nickInput.value.trim();
+                if(!nick) { showAlert("Сначала введите свой ник!"); this.checked = false; return; }
                 tg.sendData(JSON.stringify({ action: "get_code", nickname: nick }));
                 setTimeout(() => { this.checked = false; }, 600);
             }
@@ -555,7 +614,7 @@
 
         document.getElementById('withdraw-toggle').addEventListener('change', function() {
             if(this.checked) {
-                const nick = document.getElementById('nick-input').value.trim();
+                const nick = nickInput.value.trim();
                 tg.sendData(JSON.stringify({ action: "withdraw_balance", nickname: nick || "Не указан" }));
                 setTimeout(() => { this.checked = false; }, 600);
             }
