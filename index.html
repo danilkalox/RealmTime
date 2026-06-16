@@ -238,6 +238,7 @@
 </head>
 <body>
 
+    <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="preloader">
         <div class="loader-logo">
             <img src="logo.png" alt="RT" class="loader-img">
@@ -245,6 +246,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО -->
     <div id="custom-alert">
         <div class="alert-box">
             <div class="alert-title">RealmTime</div>
@@ -253,6 +255,7 @@
         </div>
     </div>
 
+    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
     <div class="app-container" id="main-app">
         <div class="header">
             <div class="logo-area">
@@ -262,12 +265,14 @@
             <button class="login-btn">Войти</button>
         </div>
 
+        <!-- НАВИГАЦИЯ -->
         <div class="tabs-menu">
             <span class="tab-link active" onclick="switchTab('profile-tab', this)">Профиль</span>
             <span class="tab-link" onclick="switchTab('donate-tab', this)">Донат</span>
             <span class="tab-link" onclick="switchTab('utilities-tab', this)">Утилиты</span>
         </div>
 
+        <!-- ВКЛАДКА: ПРОФИЛЬ -->
         <div id="profile-tab" class="tab-content active">
             <div class="feature-row">
                 <div class="feature-info-block">
@@ -331,6 +336,7 @@
             </div>
         </div>
 
+        <!-- ВКЛАДКА: ДОНАТ -->
         <div id="donate-tab" class="tab-content">
             <div class="donate-list">
                 
@@ -526,8 +532,20 @@
             </div>
         </div>
 
+        <!-- ВКЛАДКА: УТИЛИТЫ -->
         <div id="utilities-tab" class="tab-content">
             <div class="feature-row">
+                <div class="feature-info-block">
+                    <div class="feature-icon-box">📦</div>
+                    <div class="feature-info">
+                        <div class="feature-name">Ресурс-пак сервера</div>
+                        <div class="feature-value">Текстуры и кастомные модели</div>
+                    </div>
+                </div>
+                <button class="buy-btn" style="padding: 8px 16px; font-size: 0.85rem;" onclick="downloadResourcePack()">Скачать</button>
+            </div>
+
+            <div class="feature-row" style="opacity: 0.6;">
                 <div class="feature-info-block">
                     <div class="feature-icon-box">🛠</div>
                     <div class="feature-info">
@@ -580,6 +598,20 @@
                 item: itemId,
                 price: starsPrice,
                 title: itemTitle,
+                nickname: nick
+            }));
+        }
+
+        // Функция для загрузки ресурс-пака
+        function downloadResourcePack() {
+            const nick = nickInput.value.trim();
+            if(!nick) {
+                showAlert("Пожалуйста, сначала укажите свой Никнейм во вкладке Профиль!");
+                switchTab('profile-tab', document.querySelector('.tabs-menu .tab-link'));
+                return;
+            }
+            tg.sendData(JSON.stringify({
+                action: "download_resourcepack",
                 nickname: nick
             }));
         }
